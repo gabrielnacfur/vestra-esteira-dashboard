@@ -64,7 +64,7 @@ h1 { font-size: 28px; margin: 0 0 2px; }
           <div class="topbar-title">Esteira de Estratégias</div>
           <div class="topbar-sub">Estudo: Combinado (NASDAQ 100 + Outras Americanas) · multiestratégica · multi-ativo</div>
         </div>
-        <div class="topbar-meta">Gerado em 02/07/2026 17:11</div>
+        <div class="topbar-meta">Gerado em 02/07/2026 21:45</div>
       </div>
     </div>
     <div class="wrap">
@@ -291,7 +291,10 @@ h1 { font-size: 28px; margin: 0 0 2px; }
           em <b>qualquer ação que dispare</b> um dos melhores setups (escolhidos só com dados de dev),
           com no máximo 20 posições simultâneas. Muito mais robusto que escolher "as melhores do passado".
           <b>Custos reais</b>: comissão Interactive Brokers (US$ 0,005/ação, mín. US$ 1,00/ordem, máx. 1% do valor)
-          descontada em cada entrada e saída — como o sizing é ~US$ 1.000/ordem, o mínimo de US$ 1,00 domina (~0,2% ida-e-volta).</p>
+          descontada em cada entrada e saída — como o sizing é ~US$ 1.000/ordem, o mínimo de US$ 1,00 domina (~0,2% ida-e-volta).
+          <b>Prioridade de sinais</b>: testamos preencher as vagas pelos sinais mais/menos esticados (z-score) em vez de
+          ordem de chegada; <b>nenhuma regra generalizou</b> entre os dois estudos (sinal de overfit), então mantivemos o
+          preenchimento neutro — evidência de que o edge é amplo, não concentrado em "os melhores sinais".</p>
           <div class="kpi-grid">
             <div class="kpi"><div class="kpi-label">Equity final dev (1x)</div><div class="kpi-val pos">US$ 189,685</div></div>
             <div class="kpi"><div class="kpi-label">Retorno dev</div><div class="kpi-val">89.7%</div></div>
