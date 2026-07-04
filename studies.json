@@ -1,4 +1,5 @@
 {
   "combinado": "Combinado (NASDAQ 100 + Outras Americanas)",
-  "sp500": "S&P 500 (todas as faixas de preço — via call)"
+  "sp500": "S&P 500 (todas as faixas de preço — via call)",
+  "b3daytrade": "B3 Daytrade (WIN + WDO, M5/M15)"
 }
