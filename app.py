@@ -49,7 +49,7 @@ def _discover_studies() -> dict[str, Path]:
     slug_to_name = {}
     if manifest.exists():
         try:
-            slug_to_name = json.loads(manifest.read_text(encoding="utf-8"))
+            slug_to_name = json.loads(manifest.read_text(encoding="utf-8-sig"))
         except Exception:
             slug_to_name = {}
     studies: dict[str, Path] = {}
