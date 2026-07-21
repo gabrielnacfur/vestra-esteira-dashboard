@@ -1,5 +1,6 @@
 {
   "combinado": "Combinado (NASDAQ 100 + Outras Americanas)",
   "sp500": "S&P 500 (todas as faixas de preço — via call)",
-  "btc": "Bitcoin — Pontos de Acumulação (Binance)"
+  "btc": "Bitcoin — Pontos de Acumulação (Binance)",
+  "b3acoes": "Ações B3 (opções líquidas — swing 10d via call)"
 }
