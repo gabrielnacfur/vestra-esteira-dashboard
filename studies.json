@@ -3,5 +3,5 @@
   "sp500": "S&P 500 (todas as faixas de preço — via call)",
   "btc": "Bitcoin — Pontos de Acumulação (Binance)",
   "b3acoes": "Ações B3 (opções líquidas — swing 10d via call)",
-  "weekly_us": "Semanal S&P 500 — entrada seg. abertura (stop on/off)"
+  "weekly_us": "Semanal EUA (S&P 500 + NASDAQ 100 + Outras) — entrada seg. abertura"
 }
