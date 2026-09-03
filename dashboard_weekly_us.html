@@ -67,7 +67,7 @@ h1 { font-size: 28px; margin: 0 0 2px; }
       <div class="topbar-titles">
         <div class="topbar-title">Estudo Semanal — Semanal EUA (S&P 500 + NASDAQ 100 + Outras) — entrada seg. abertura</div>
         <div class="topbar-sub">Gatilho D1 em qualquer dia da semana · compra na abertura da segunda seguinte · venda na abertura da segunda posterior</div>
-      </div><div class="topbar-meta">Gerado em 02/09/2026 21:35</div></div></div>
+      </div><div class="topbar-meta">Gerado em 03/09/2026 14:45</div></div></div>
     <div class="wrap">
 
     <div class="alert warn"><b>Regra operacional simulada:</b> Regra operacional fixa: os gatilhos são DIÁRIOS (D1) e podem ocorrer em QUALQUER pregão da semana; a entrada só acontece na ABERTURA da segunda seguinte, e a venda na ABERTURA da segunda posterior. Se o setup dispara em mais de um dia da semana, vale o gatilho mais recente. Por isso só a ENTRADA original de cada setup é usada — as saídas originais (MMA5, máxima de 7 dias, 5º fechamento em alta, alvo %) não se aplicam. Setups com ordem 'start' (NR4, 80-20, Turtle Soup) viram: condição no candle do gatilho -> compra na segunda seguinte. Stop ON = nível clássico do setup fixado no candle do gatilho, checado nas mínimas da semana (gap abaixo do stop sai na abertura).
@@ -859,6 +859,739 @@ h1 { font-size: 28px; margin: 0 0 2px; }
   </tbody>
 </table>
     </div>
+
+    
+    <div class="section" style="border:2px solid #c33"><h2>🎲 O livro bate 20 ações sorteadas?</h2>
+      <p class="lead">Benchmark que faltava: a MESMA regra operacional (20 posições, 1% cada, entra na
+      abertura de segunda, sai na segunda seguinte, comissão real da IB), mas escolhendo as ações
+      <b>por sorteio</b>, sem setup nenhum. Média de 200 sorteios. A linha B compra 20 ações uma vez e
+      <b>segura</b> — sem giro, sem pagar corretagem toda semana.</p>
+      <table class="dataframe data-table">
+  <thead>
+    <tr style="text-align: right;">
+      <th>fase</th>
+      <th>livro sem stop</th>
+      <th>livro sem stop (ret)</th>
+      <th>livro ATR 2,5×</th>
+      <th>livro ATR 2,5× (ret)</th>
+      <th>20 sorteadas/semana</th>
+      <th>20 sorteadas/semana (ret)</th>
+      <th>20 sorteadas e mantidas</th>
+      <th>20 sorteadas e mantidas (ret)</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>dev</td>
+      <td>0.77</td>
+      <td>33.4%</td>
+      <td>0.82</td>
+      <td>29.8%</td>
+      <td>0.54</td>
+      <td>18.8%</td>
+      <td>0.85</td>
+      <td>76.9%</td>
+    </tr>
+    <tr>
+      <td>holdout</td>
+      <td>-0.02</td>
+      <td>-0.2%</td>
+      <td>0.12</td>
+      <td>0.6%</td>
+      <td>0.32</td>
+      <td>2.4%</td>
+      <td>0.80</td>
+      <td>6.7%</td>
+    </tr>
+  </tbody>
+</table>
+      <div class="alert warn"><b>Leitura:</b> no dev o livro bate o sorteio semanal (Sharpe
+      0.77 contra 0.54) —
+      os gatilhos <b>têm</b> valor. No holdout, não bate. E nas duas fases <b>comprar 20 ações e segurar
+      ganha de tudo</b>, porque não paga o giro: a corretagem consome
+      <b>2.09% do capital total por ano</b>, que é
+      <b>10.4% ao ano sobre os 20% efetivamente investidos</b>.
+      <br><br><b>Ressalva importante:</b> o universo é formado pelos membros ATUAIS dos índices, então
+      "ação sorteada" carrega viés de sobrevivência — e ele favorece desproporcionalmente a linha B, que
+      segura os mesmos papéis por 10 anos. A comparação limpa é <b>livro contra sorteio semanal</b>:
+      mesmo universo, mesmo giro, mesmo custo.</div>
+    </div>
+
+
+
+    
+    <div class="section"><h2>🔬 Teste pré-especificado — sem seleção, histórico completo</h2>
+      <p class="lead">Os setups do Manual vêm prontos do livro, sem otimização. Então aqui não há
+      dev/holdout, não há escolha de "melhores": <b>os 15 setups, todos reportados</b>, sobre o histórico
+      inteiro (531 semanas). O controle é o certo: o retorno de cada trade é comparado com o retorno médio
+      de <b>todas as ~548 ações do universo na mesma semana</b> — isso remove a alta do mercado e o regime,
+      e o que sobra (<b>excesso</b>) é o alfa do gatilho. O intervalo de confiança vem de bootstrap por
+      <b>bloco semanal</b>: trades da mesma semana são quase a mesma aposta, e tratá-los como independentes
+      infla a significância várias vezes (são 67 mil trades, mas só 529 semanas de verdade).
+      O p está corrigido para os 45 testes (Benjamini-Hochberg).</p>
+      <div class="alert warn"><b>0 de 45 testes</b> têm excesso
+      significativo (IC95 acima de zero <i>e</i> p corrigido &lt; 0,05). O maior excesso é
+      <b>s181_turtle_soup</b> com ATR 2,5×:
+      <b>+0.383% por semana</b> acima de uma ação sorteada
+      (IC95 +0.123% a +0.668%, positivo em
+      9 de 11 anos) — mas com p corrigido de
+      0.073 ele não passa a régua depois de contar os 45 testes.
+      <br><br>Repare também que o <b>stop clássico dá excesso NEGATIVO nos 15 setups</b>, com vários
+      intervalos inteiramente abaixo de zero. Essa é a conclusão mais sólida do estudo — e é a única que
+      não depende de nenhuma seleção, porque compara cada setup consigo mesmo.</div>
+      <table class="dataframe data-table">
+  <thead>
+    <tr style="text-align: right;">
+      <th>setup</th>
+      <th>stop</th>
+      <th>trades</th>
+      <th>semanas</th>
+      <th>ret médio</th>
+      <th>ação sorteada</th>
+      <th>excesso</th>
+      <th>IC95 min</th>
+      <th>IC95 max</th>
+      <th>t</th>
+      <th>p (corrigido)</th>
+      <th>anos +</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>s181_turtle_soup</td>
+      <td>ATR 2,5×</td>
+      <td>2.770</td>
+      <td>463</td>
+      <td>0.9%</td>
+      <td>0.5%</td>
+      <td>0.4%</td>
+      <td>0.1%</td>
+      <td>0.7%</td>
+      <td>2.587</td>
+      <td>0.073</td>
+      <td>9</td>
+    </tr>
+    <tr>
+      <td>s181_turtle_soup</td>
+      <td>sem stop</td>
+      <td>2.770</td>
+      <td>463</td>
+      <td>0.9%</td>
+      <td>0.5%</td>
+      <td>0.3%</td>
+      <td>0.1%</td>
+      <td>0.6%</td>
+      <td>2.310</td>
+      <td>0.117</td>
+      <td>9</td>
+    </tr>
+    <tr>
+      <td>s181_turtle_soup</td>
+      <td>stop clássico</td>
+      <td>2.770</td>
+      <td>463</td>
+      <td>0.8%</td>
+      <td>0.5%</td>
+      <td>0.3%</td>
+      <td>-0.2%</td>
+      <td>0.8%</td>
+      <td>2.022</td>
+      <td>0.149</td>
+      <td>5</td>
+    </tr>
+    <tr>
+      <td>s38_007_filtromacd</td>
+      <td>sem stop</td>
+      <td>37.151</td>
+      <td>524</td>
+      <td>0.6%</td>
+      <td>0.5%</td>
+      <td>0.1%</td>
+      <td>0.0%</td>
+      <td>0.2%</td>
+      <td>1.575</td>
+      <td>0.247</td>
+      <td>8</td>
+    </tr>
+    <tr>
+      <td>s105_pctb_thr-0.2</td>
+      <td>sem stop</td>
+      <td>26.619</td>
+      <td>525</td>
+      <td>0.7%</td>
+      <td>0.6%</td>
+      <td>0.1%</td>
+      <td>0.0%</td>
+      <td>0.2%</td>
+      <td>1.385</td>
+      <td>0.299</td>
+      <td>8</td>
+    </tr>
+    <tr>
+      <td>s105_pctb_thr-0.1</td>
+      <td>sem stop</td>
+      <td>53.493</td>
+      <td>529</td>
+      <td>0.7%</td>
+      <td>0.6%</td>
+      <td>0.1%</td>
+      <td>0.0%</td>
+      <td>0.2%</td>
+      <td>2.041</td>
+      <td>0.155</td>
+      <td>8</td>
+    </tr>
+    <tr>
+      <td>s191_williams_thr-95</td>
+      <td>ATR 2,5×</td>
+      <td>43.126</td>
+      <td>528</td>
+      <td>0.7%</td>
+      <td>0.6%</td>
+      <td>0.1%</td>
+      <td>-0.0%</td>
+      <td>0.2%</td>
+      <td>1.379</td>
+      <td>0.291</td>
+      <td>10</td>
+    </tr>
+    <tr>
+      <td>s105_pctb_thr-0.1</td>
+      <td>ATR 2,5×</td>
+      <td>53.493</td>
+      <td>529</td>
+      <td>0.7%</td>
+      <td>0.6%</td>
+      <td>0.1%</td>
+      <td>0.0%</td>
+      <td>0.2%</td>
+      <td>1.903</td>
+      <td>0.171</td>
+      <td>9</td>
+    </tr>
+    <tr>
+      <td>s38_007_filtromacd</td>
+      <td>ATR 2,5×</td>
+      <td>37.151</td>
+      <td>524</td>
+      <td>0.6%</td>
+      <td>0.5%</td>
+      <td>0.1%</td>
+      <td>-0.0%</td>
+      <td>0.2%</td>
+      <td>1.426</td>
+      <td>0.301</td>
+      <td>6</td>
+    </tr>
+    <tr>
+      <td>s191_williams_thr-90</td>
+      <td>ATR 2,5×</td>
+      <td>67.542</td>
+      <td>529</td>
+      <td>0.6%</td>
+      <td>0.6%</td>
+      <td>0.1%</td>
+      <td>0.0%</td>
+      <td>0.2%</td>
+      <td>1.598</td>
+      <td>0.248</td>
+      <td>10</td>
+    </tr>
+    <tr>
+      <td>s105_pctb_thr-0.2</td>
+      <td>ATR 2,5×</td>
+      <td>26.619</td>
+      <td>525</td>
+      <td>0.7%</td>
+      <td>0.6%</td>
+      <td>0.1%</td>
+      <td>-0.0%</td>
+      <td>0.2%</td>
+      <td>1.184</td>
+      <td>0.343</td>
+      <td>7</td>
+    </tr>
+    <tr>
+      <td>s40_duplo7</td>
+      <td>sem stop</td>
+      <td>64.508</td>
+      <td>528</td>
+      <td>0.7%</td>
+      <td>0.6%</td>
+      <td>0.1%</td>
+      <td>0.0%</td>
+      <td>0.2%</td>
+      <td>1.622</td>
+      <td>0.248</td>
+      <td>9</td>
+    </tr>
+    <tr>
+      <td>s191_williams_thr-95</td>
+      <td>sem stop</td>
+      <td>43.126</td>
+      <td>528</td>
+      <td>0.7%</td>
+      <td>0.6%</td>
+      <td>0.1%</td>
+      <td>-0.0%</td>
+      <td>0.2%</td>
+      <td>1.173</td>
+      <td>0.339</td>
+      <td>8</td>
+    </tr>
+    <tr>
+      <td>s40_duplo7</td>
+      <td>ATR 2,5×</td>
+      <td>64.508</td>
+      <td>528</td>
+      <td>0.7%</td>
+      <td>0.6%</td>
+      <td>0.1%</td>
+      <td>0.0%</td>
+      <td>0.2%</td>
+      <td>1.550</td>
+      <td>0.248</td>
+      <td>9</td>
+    </tr>
+    <tr>
+      <td>s59_ifr2_thr5_mm200False</td>
+      <td>ATR 2,5×</td>
+      <td>49.190</td>
+      <td>531</td>
+      <td>0.6%</td>
+      <td>0.5%</td>
+      <td>0.1%</td>
+      <td>-0.0%</td>
+      <td>0.2%</td>
+      <td>1.243</td>
+      <td>0.321</td>
+      <td>8</td>
+    </tr>
+    <tr>
+      <td>s191_williams_thr-90</td>
+      <td>sem stop</td>
+      <td>67.542</td>
+      <td>529</td>
+      <td>0.6%</td>
+      <td>0.6%</td>
+      <td>0.1%</td>
+      <td>-0.0%</td>
+      <td>0.2%</td>
+      <td>1.361</td>
+      <td>0.289</td>
+      <td>10</td>
+    </tr>
+    <tr>
+      <td>s59_ifr2_thr5_mm200False</td>
+      <td>sem stop</td>
+      <td>49.190</td>
+      <td>531</td>
+      <td>0.6%</td>
+      <td>0.5%</td>
+      <td>0.1%</td>
+      <td>-0.0%</td>
+      <td>0.2%</td>
+      <td>1.159</td>
+      <td>0.336</td>
+      <td>7</td>
+    </tr>
+    <tr>
+      <td>s11_4quedas</td>
+      <td>ATR 2,5×</td>
+      <td>41.541</td>
+      <td>531</td>
+      <td>0.6%</td>
+      <td>0.5%</td>
+      <td>0.1%</td>
+      <td>-0.0%</td>
+      <td>0.2%</td>
+      <td>1.276</td>
+      <td>0.324</td>
+      <td>8</td>
+    </tr>
+    <tr>
+      <td>s188_8020</td>
+      <td>ATR 2,5×</td>
+      <td>69.360</td>
+      <td>530</td>
+      <td>0.6%</td>
+      <td>0.5%</td>
+      <td>0.1%</td>
+      <td>-0.0%</td>
+      <td>0.1%</td>
+      <td>1.744</td>
+      <td>0.203</td>
+      <td>8</td>
+    </tr>
+    <tr>
+      <td>s188_8020</td>
+      <td>sem stop</td>
+      <td>69.360</td>
+      <td>530</td>
+      <td>0.6%</td>
+      <td>0.5%</td>
+      <td>0.1%</td>
+      <td>0.0%</td>
+      <td>0.1%</td>
+      <td>1.751</td>
+      <td>0.212</td>
+      <td>9</td>
+    </tr>
+    <tr>
+      <td>s59_ifr2_thr5_mm200True</td>
+      <td>sem stop</td>
+      <td>21.961</td>
+      <td>484</td>
+      <td>0.5%</td>
+      <td>0.5%</td>
+      <td>0.1%</td>
+      <td>-0.1%</td>
+      <td>0.2%</td>
+      <td>0.648</td>
+      <td>0.597</td>
+      <td>6</td>
+    </tr>
+    <tr>
+      <td>s59_ifr2_thr5_mm200True</td>
+      <td>ATR 2,5×</td>
+      <td>21.961</td>
+      <td>484</td>
+      <td>0.5%</td>
+      <td>0.5%</td>
+      <td>0.1%</td>
+      <td>-0.1%</td>
+      <td>0.2%</td>
+      <td>0.666</td>
+      <td>0.598</td>
+      <td>7</td>
+    </tr>
+    <tr>
+      <td>s11_4quedas</td>
+      <td>sem stop</td>
+      <td>41.541</td>
+      <td>531</td>
+      <td>0.5%</td>
+      <td>0.5%</td>
+      <td>0.0%</td>
+      <td>-0.1%</td>
+      <td>0.1%</td>
+      <td>0.799</td>
+      <td>0.516</td>
+      <td>8</td>
+    </tr>
+    <tr>
+      <td>s38_007_filtromm200</td>
+      <td>ATR 2,5×</td>
+      <td>73.353</td>
+      <td>490</td>
+      <td>0.4%</td>
+      <td>0.4%</td>
+      <td>0.0%</td>
+      <td>-0.1%</td>
+      <td>0.1%</td>
+      <td>0.166</td>
+      <td>0.908</td>
+      <td>6</td>
+    </tr>
+    <tr>
+      <td>s38_007_filtromm200</td>
+      <td>sem stop</td>
+      <td>73.353</td>
+      <td>490</td>
+      <td>0.4%</td>
+      <td>0.4%</td>
+      <td>0.0%</td>
+      <td>-0.1%</td>
+      <td>0.1%</td>
+      <td>0.142</td>
+      <td>0.907</td>
+      <td>7</td>
+    </tr>
+    <tr>
+      <td>s190_recuo_fortes_mm20False</td>
+      <td>sem stop</td>
+      <td>31.695</td>
+      <td>529</td>
+      <td>0.5%</td>
+      <td>0.5%</td>
+      <td>0.0%</td>
+      <td>-0.1%</td>
+      <td>0.1%</td>
+      <td>0.019</td>
+      <td>0.985</td>
+      <td>8</td>
+    </tr>
+    <tr>
+      <td>s190_recuo_fortes_mm20False</td>
+      <td>ATR 2,5×</td>
+      <td>31.695</td>
+      <td>529</td>
+      <td>0.5%</td>
+      <td>0.5%</td>
+      <td>-0.0%</td>
+      <td>-0.1%</td>
+      <td>0.1%</td>
+      <td>-0.315</td>
+      <td>0.806</td>
+      <td>6</td>
+    </tr>
+    <tr>
+      <td>s178_nr4</td>
+      <td>ATR 2,5×</td>
+      <td>49.829</td>
+      <td>507</td>
+      <td>0.3%</td>
+      <td>0.3%</td>
+      <td>-0.0%</td>
+      <td>-0.1%</td>
+      <td>0.0%</td>
+      <td>-0.388</td>
+      <td>0.785</td>
+      <td>6</td>
+    </tr>
+    <tr>
+      <td>s178_nr4</td>
+      <td>sem stop</td>
+      <td>49.829</td>
+      <td>507</td>
+      <td>0.3%</td>
+      <td>0.3%</td>
+      <td>-0.0%</td>
+      <td>-0.1%</td>
+      <td>0.0%</td>
+      <td>-0.377</td>
+      <td>0.775</td>
+      <td>5</td>
+    </tr>
+    <tr>
+      <td>s190_recuo_fortes_mm20True</td>
+      <td>sem stop</td>
+      <td>10.791</td>
+      <td>517</td>
+      <td>0.3%</td>
+      <td>0.4%</td>
+      <td>-0.1%</td>
+      <td>-0.2%</td>
+      <td>0.0%</td>
+      <td>-0.874</td>
+      <td>0.478</td>
+      <td>4</td>
+    </tr>
+    <tr>
+      <td>s190_recuo_fortes_mm20True</td>
+      <td>ATR 2,5×</td>
+      <td>10.791</td>
+      <td>517</td>
+      <td>0.3%</td>
+      <td>0.4%</td>
+      <td>-0.1%</td>
+      <td>-0.2%</td>
+      <td>0.0%</td>
+      <td>-1.267</td>
+      <td>0.318</td>
+      <td>4</td>
+    </tr>
+    <tr>
+      <td>s38_007_filtromm200</td>
+      <td>stop clássico</td>
+      <td>73.353</td>
+      <td>490</td>
+      <td>0.3%</td>
+      <td>0.4%</td>
+      <td>-0.1%</td>
+      <td>-0.2%</td>
+      <td>0.1%</td>
+      <td>-0.996</td>
+      <td>0.410</td>
+      <td>4</td>
+    </tr>
+    <tr>
+      <td>s59_ifr2_thr5_mm200True</td>
+      <td>stop clássico</td>
+      <td>21.961</td>
+      <td>484</td>
+      <td>0.4%</td>
+      <td>0.5%</td>
+      <td>-0.1%</td>
+      <td>-0.4%</td>
+      <td>0.2%</td>
+      <td>-1.151</td>
+      <td>0.330</td>
+      <td>3</td>
+    </tr>
+    <tr>
+      <td>s38_007_filtromacd</td>
+      <td>stop clássico</td>
+      <td>37.151</td>
+      <td>524</td>
+      <td>0.4%</td>
+      <td>0.5%</td>
+      <td>-0.1%</td>
+      <td>-0.4%</td>
+      <td>0.1%</td>
+      <td>-1.413</td>
+      <td>0.296</td>
+      <td>4</td>
+    </tr>
+    <tr>
+      <td>s59_ifr2_thr5_mm200False</td>
+      <td>stop clássico</td>
+      <td>49.190</td>
+      <td>531</td>
+      <td>0.4%</td>
+      <td>0.5%</td>
+      <td>-0.2%</td>
+      <td>-0.4%</td>
+      <td>0.1%</td>
+      <td>-1.865</td>
+      <td>0.175</td>
+      <td>3</td>
+    </tr>
+    <tr>
+      <td>s11_4quedas</td>
+      <td>stop clássico</td>
+      <td>41.541</td>
+      <td>531</td>
+      <td>0.3%</td>
+      <td>0.5%</td>
+      <td>-0.2%</td>
+      <td>-0.4%</td>
+      <td>0.1%</td>
+      <td>-1.993</td>
+      <td>0.149</td>
+      <td>3</td>
+    </tr>
+    <tr>
+      <td>s191_williams_thr-90</td>
+      <td>stop clássico</td>
+      <td>67.542</td>
+      <td>529</td>
+      <td>0.4%</td>
+      <td>0.6%</td>
+      <td>-0.2%</td>
+      <td>-0.5%</td>
+      <td>0.1%</td>
+      <td>-2.100</td>
+      <td>0.146</td>
+      <td>3</td>
+    </tr>
+    <tr>
+      <td>s40_duplo7</td>
+      <td>stop clássico</td>
+      <td>64.508</td>
+      <td>528</td>
+      <td>0.4%</td>
+      <td>0.6%</td>
+      <td>-0.2%</td>
+      <td>-0.5%</td>
+      <td>0.1%</td>
+      <td>-2.244</td>
+      <td>0.112</td>
+      <td>3</td>
+    </tr>
+    <tr>
+      <td>s190_recuo_fortes_mm20True</td>
+      <td>stop clássico</td>
+      <td>10.791</td>
+      <td>517</td>
+      <td>0.2%</td>
+      <td>0.4%</td>
+      <td>-0.2%</td>
+      <td>-0.4%</td>
+      <td>-0.1%</td>
+      <td>-2.437</td>
+      <td>0.095</td>
+      <td>3</td>
+    </tr>
+    <tr>
+      <td>s105_pctb_thr-0.2</td>
+      <td>stop clássico</td>
+      <td>26.619</td>
+      <td>525</td>
+      <td>0.4%</td>
+      <td>0.6%</td>
+      <td>-0.2%</td>
+      <td>-0.6%</td>
+      <td>0.2%</td>
+      <td>-2.306</td>
+      <td>0.105</td>
+      <td>3</td>
+    </tr>
+    <tr>
+      <td>s105_pctb_thr-0.1</td>
+      <td>stop clássico</td>
+      <td>53.493</td>
+      <td>529</td>
+      <td>0.4%</td>
+      <td>0.6%</td>
+      <td>-0.2%</td>
+      <td>-0.5%</td>
+      <td>0.1%</td>
+      <td>-2.692</td>
+      <td>0.064</td>
+      <td>3</td>
+    </tr>
+    <tr>
+      <td>s190_recuo_fortes_mm20False</td>
+      <td>stop clássico</td>
+      <td>31.695</td>
+      <td>529</td>
+      <td>0.3%</td>
+      <td>0.5%</td>
+      <td>-0.2%</td>
+      <td>-0.4%</td>
+      <td>-0.1%</td>
+      <td>-3.216</td>
+      <td>0.058</td>
+      <td>3</td>
+    </tr>
+    <tr>
+      <td>s178_nr4</td>
+      <td>stop clássico</td>
+      <td>49.829</td>
+      <td>507</td>
+      <td>0.0%</td>
+      <td>0.3%</td>
+      <td>-0.2%</td>
+      <td>-0.4%</td>
+      <td>-0.1%</td>
+      <td>-2.742</td>
+      <td>0.069</td>
+      <td>2</td>
+    </tr>
+    <tr>
+      <td>s188_8020</td>
+      <td>stop clássico</td>
+      <td>69.360</td>
+      <td>530</td>
+      <td>0.2%</td>
+      <td>0.5%</td>
+      <td>-0.2%</td>
+      <td>-0.5%</td>
+      <td>-0.0%</td>
+      <td>-2.910</td>
+      <td>0.054</td>
+      <td>3</td>
+    </tr>
+    <tr>
+      <td>s191_williams_thr-95</td>
+      <td>stop clássico</td>
+      <td>43.126</td>
+      <td>528</td>
+      <td>0.4%</td>
+      <td>0.6%</td>
+      <td>-0.3%</td>
+      <td>-0.7%</td>
+      <td>0.1%</td>
+      <td>-3.171</td>
+      <td>0.034</td>
+      <td>3</td>
+    </tr>
+  </tbody>
+</table>
+    </div>
+
+
 
     
     <div class="section"><h2>🎯 Como preencher as 20 vagas — e por que não priorizar</h2>
