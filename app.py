@@ -79,8 +79,14 @@ def main():
     else:
         choice = next(iter(studies))
 
-    html = studies[choice].read_text(encoding="utf-8")
-    components.html(html, height=2600, scrolling=True)
+    components.html(_load_dashboard(str(studies[choice])), height=2600, scrolling=True)
+
+
+@st.cache_data(show_spinner="Carregando dashboard...")
+def _load_dashboard(path: str) -> str:
+    """Lê o HTML uma vez por sessão — o dashboard combinado passa de 4 MB
+    (traz as séries de todas as estratégias para o combinador interativo)."""
+    return Path(path).read_text(encoding="utf-8")
 
 
 if __name__ == "__main__":
