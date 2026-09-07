@@ -4,5 +4,6 @@
   "btc": "Bitcoin — Pontos de Acumulação (Binance)",
   "b3acoes": "Ações B3 (opções líquidas — swing 10d via call)",
   "weekly_us": "Semanal EUA (S&P 500 + NASDAQ 100 + Outras) — entrada seg. abertura",
-  "usindices": "Índices US (S&P 500 + Nasdaq 100)"
+  "usindices": "Índices US (S&P 500 + Nasdaq 100)",
+  "kalman_us": "Kalman momentum — swing EUA (S&P 500 + NASDAQ 100 + Outras)"
 }
