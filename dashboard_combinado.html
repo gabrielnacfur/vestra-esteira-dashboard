@@ -64,7 +64,7 @@ h1 { font-size: 28px; margin: 0 0 2px; }
           <div class="topbar-title">Esteira de Estratégias</div>
           <div class="topbar-sub">Estudo: Combinado (NASDAQ 100 + Outras Americanas) · multiestratégica · multi-ativo</div>
         </div>
-        <div class="topbar-meta">Gerado em 07/09/2026 23:41</div>
+        <div class="topbar-meta">Gerado em 08/09/2026 08:28</div>
       </div>
     </div>
     <div class="wrap">
@@ -1237,7 +1237,7 @@ h1 { font-size: 28px; margin: 0 0 2px; }
   <tbody>
     <tr>
       <td>US$ 100.000</td>
-      <td>0.1%</td>
+      <td>0.145%</td>
       <td>10.8%</td>
       <td>141.9%</td>
       <td>9.3%</td>
@@ -1246,7 +1246,7 @@ h1 { font-size: 28px; margin: 0 0 2px; }
     </tr>
     <tr>
       <td>US$ 250.000</td>
-      <td>0.1%</td>
+      <td>0.075%</td>
       <td>11.7%</td>
       <td>160.3%</td>
       <td>10.7%</td>
@@ -1255,7 +1255,7 @@ h1 { font-size: 28px; margin: 0 0 2px; }
     </tr>
     <tr>
       <td>US$ 1.000.000</td>
-      <td>0.1%</td>
+      <td>0.052%</td>
       <td>12.0%</td>
       <td>166.5%</td>
       <td>11.3%</td>
@@ -1264,7 +1264,7 @@ h1 { font-size: 28px; margin: 0 0 2px; }
     </tr>
     <tr>
       <td>US$ 5.000.000</td>
-      <td>0.1%</td>
+      <td>0.051%</td>
       <td>12.0%</td>
       <td>166.9%</td>
       <td>11.4%</td>
@@ -1326,6 +1326,166 @@ h1 { font-size: 28px; margin: 0 0 2px; }
   </tbody>
 </table></div>
       </div>
+
+      
+      <h3>Quanto disso é a estratégia e quanto é juros compostos</h3>
+      <p class="lead">A simulação aloca <b>1% do capital CORRENTE</b> por posição — a ordem cresce
+      junto com o patrimônio, então o resultado <b>compõe</b>. Isso é o que um fundo de verdade faz
+      ao reinvestir, mas convém saber o tamanho do efeito. Abaixo o mesmo livro rodado também com
+      a posição travada em 1% do capital INICIAL, que isola o edge do reinvestimento.</p>
+      <table class="dataframe data-table">
+  <thead>
+    <tr style="text-align: right;">
+      <th>fase</th>
+      <th>tamanho da posição</th>
+      <th>retorno acumulado</th>
+      <th>CAGR</th>
+      <th>MDD</th>
+      <th>Sharpe</th>
+      <th>custo por trade</th>
+      <th>ordem no fim do período</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>dev</td>
+      <td>1% do capital CORRENTE (compõe)</td>
+      <td>166.5%</td>
+      <td>12.0%</td>
+      <td>-10.9%</td>
+      <td>1.71</td>
+      <td>0.052%</td>
+      <td>US$ 26,654</td>
+    </tr>
+    <tr>
+      <td>dev</td>
+      <td>1% do capital INICIAL (não reinveste)</td>
+      <td>99.8%</td>
+      <td>8.3%</td>
+      <td>-8.0%</td>
+      <td>1.76</td>
+      <td>0.056%</td>
+      <td>US$ 10,000</td>
+    </tr>
+    <tr>
+      <td>holdout</td>
+      <td>1% do capital CORRENTE (compõe)</td>
+      <td>17.7%</td>
+      <td>11.3%</td>
+      <td>-5.3%</td>
+      <td>1.72</td>
+      <td>0.025%</td>
+      <td>US$ 11,775</td>
+    </tr>
+    <tr>
+      <td>holdout</td>
+      <td>1% do capital INICIAL (não reinveste)</td>
+      <td>16.6%</td>
+      <td>10.6%</td>
+      <td>-5.0%</td>
+      <td>1.76</td>
+      <td>0.027%</td>
+      <td>US$ 10,000</td>
+    </tr>
+  </tbody>
+</table>
+      <div class="alert warn">No <b>dev</b>, o reinvestimento responde por
+      <b>+66.8pp</b> dos 166.5% —
+      <b>40% do resultado</b>. No <b>holdout</b> vale só
+      +1.1pp (6%), porque juros compostos são
+      função do TEMPO: 8,7 anos compõem muito, 1,5 ano quase nada.<br>
+      Duas leituras que seguem daí. Primeira: o <b>CAGR já é a taxa composta</b>, não há contagem
+      dupla — mas o retorno acumulado de 167% no dev não é "a estratégia
+      rendendo isso", é a estratégia rendendo 100% e o reinvestimento fazendo
+      o resto. Segunda: compor <b>amplifica erro de estimativa</b> — se o edge dos primeiros anos
+      estiver superestimado, todo o caminho posterior vem inflado junto. O número conservador para
+      julgar a estratégia é o de posição travada; o número realista para projetar o fundo é o
+      composto. <b>No holdout cego, mesmo sem reinvestir nada, o CAGR fica em
+      10.57%</b> — a meta de
+      10% não depende do efeito de composição.</div>
+      <h4 style="font-size:12px;color:#445;margin:16px 0 6px">O edge está decaindo?</h4>
+      <p class="lead">O % de retorno anual cai naturalmente com posição travada (mesmos dólares
+      sobre um patrimônio maior), então ele não serve para responder isso. A métrica livre de
+      escala é o <b>ganho médio por trade</b>:</p>
+      <table class="dataframe data-table">
+  <thead>
+    <tr style="text-align: right;">
+      <th>ano</th>
+      <th>fase</th>
+      <th>gatilhos gerados</th>
+      <th>ganho médio por trade</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>2016</td>
+      <td>dev</td>
+      <td>7644</td>
+      <td>0.657%</td>
+    </tr>
+    <tr>
+      <td>2017</td>
+      <td>dev</td>
+      <td>7767</td>
+      <td>0.700%</td>
+    </tr>
+    <tr>
+      <td>2018</td>
+      <td>dev</td>
+      <td>9641</td>
+      <td>0.184%</td>
+    </tr>
+    <tr>
+      <td>2019</td>
+      <td>dev</td>
+      <td>8029</td>
+      <td>0.806%</td>
+    </tr>
+    <tr>
+      <td>2020</td>
+      <td>dev</td>
+      <td>8943</td>
+      <td>0.876%</td>
+    </tr>
+    <tr>
+      <td>2021</td>
+      <td>dev</td>
+      <td>10405</td>
+      <td>0.475%</td>
+    </tr>
+    <tr>
+      <td>2022</td>
+      <td>dev</td>
+      <td>12628</td>
+      <td>0.053%</td>
+    </tr>
+    <tr>
+      <td>2023</td>
+      <td>dev</td>
+      <td>10377</td>
+      <td>0.860%</td>
+    </tr>
+    <tr>
+      <td>2024</td>
+      <td>holdout</td>
+      <td>10590</td>
+      <td>0.753%</td>
+    </tr>
+    <tr>
+      <td>2025</td>
+      <td>holdout</td>
+      <td>10991</td>
+      <td>0.662%</td>
+    </tr>
+    <tr>
+      <td>2026</td>
+      <td>holdout</td>
+      <td>2670</td>
+      <td>-0.283%</td>
+    </tr>
+  </tbody>
+</table>
+      <p class="lead">Tendência: <b>-0.0350pp por ano</b> (r = -0.31, p = 0.36) — com 11 anos, <b>não dá para afirmar decaimento</b>. A variação de ano para ano domina: vai de -0.28% no pior ano a 0.88% no melhor.</p>
 
       <h3>Robustez — e o custo de ter procurado</h3>
       <table class="dataframe data-table">
