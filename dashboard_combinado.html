@@ -64,7 +64,7 @@ h1 { font-size: 28px; margin: 0 0 2px; }
           <div class="topbar-title">Esteira de Estratégias</div>
           <div class="topbar-sub">Estudo: Combinado (NASDAQ 100 + Outras Americanas) · multiestratégica · multi-ativo</div>
         </div>
-        <div class="topbar-meta">Gerado em 08/09/2026 20:58</div>
+        <div class="topbar-meta">Gerado em 08/09/2026 22:25</div>
       </div>
     </div>
     <div class="wrap">
@@ -1526,6 +1526,459 @@ h1 { font-size: 28px; margin: 0 0 2px; }
       <b>prova</b>. Rodar com dinheiro pequeno por alguns meses antes de escalar é a decisão
       certa.</div>
     </div>
+    <div class="section" style="border:2px solid #b3261e">
+      <h2>⏱️ Execução — a que preço a ordem entra decide o mandato</h2>
+      <div class="alert warn"><b>Condição operacional, não detalhe contábil.</b> Todo o resultado
+      deste livro pressupõe compra no <b>fechamento do candle de gatilho</b>, via ordem
+      <b>MOC (market-on-close)</b>. Sem MOC, entrando na abertura do pregão seguinte, o livro cai
+      de <b>12.00% / 11.29%</b> (dev/holdout) para
+      <b>9.84% / 9.50%</b> — e para
+      <b>9.22% / 8.88%</b> com 5bps de escorregamento. São
+      <b>-2.16pp</b> no dev e <b>-1.78pp</b> no holdout, o que derruba a
+      carteira <b>abaixo da meta de 10% ao ano</b>.</div>
+
+      <h3>As seis formas de executar o mesmo livro</h3>
+      <p class="lead">Mesmos sinais, mesmas datas de saída, mesma fila de 20 vagas. Só muda o
+      preço em que a ordem é preenchida. O simulador marca a mercado por fechamento, então a
+      troca foi feita no <b>retorno do primeiro dia</b> de cada posição (e no do último, quando a
+      venda também muda de horário) — não num rótulo de preço, que o motor ignoraria.</p>
+      <table class="dataframe data-table">
+  <thead>
+    <tr style="text-align: right;">
+      <th>como a ordem entra</th>
+      <th>fase</th>
+      <th>CAGR</th>
+      <th>Sharpe</th>
+      <th>MDD</th>
+      <th>ganho/trade</th>
+      <th>acerto</th>
+      <th>trades</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>A. fech. do gatilho (MOC)</td>
+      <td>holdout</td>
+      <td>11.29%</td>
+      <td>1.72</td>
+      <td>-5.3%</td>
+      <td>+0.97%</td>
+      <td>53.7%</td>
+      <td>1716</td>
+    </tr>
+    <tr>
+      <td>B. abertura do dia seguinte</td>
+      <td>holdout</td>
+      <td>9.50%</td>
+      <td>1.55</td>
+      <td>-4.5%</td>
+      <td>+0.82%</td>
+      <td>53.7%</td>
+      <td>1716</td>
+    </tr>
+    <tr>
+      <td>B+. abertura + 5bps de slippage</td>
+      <td>holdout</td>
+      <td>8.88%</td>
+      <td>1.46</td>
+      <td>-4.5%</td>
+      <td>+0.77%</td>
+      <td>53.2%</td>
+      <td>1716</td>
+    </tr>
+    <tr>
+      <td>C. fech. do dia seguinte</td>
+      <td>holdout</td>
+      <td>8.86%</td>
+      <td>1.70</td>
+      <td>-4.0%</td>
+      <td>+0.77%</td>
+      <td>53.2%</td>
+      <td>1716</td>
+    </tr>
+    <tr>
+      <td>D. abertura -> abertura&nbsp;&nbsp;(MOO nas duas pontas)</td>
+      <td>holdout</td>
+      <td>10.11%</td>
+      <td>1.84</td>
+      <td>-4.3%</td>
+      <td>+1.08%</td>
+      <td>54.0%</td>
+      <td>1384</td>
+    </tr>
+    <tr>
+      <td>D+. abertura -> abertura, 5bps por ponta</td>
+      <td>holdout</td>
+      <td>9.11%</td>
+      <td>1.67</td>
+      <td>-4.4%</td>
+      <td>+0.98%</td>
+      <td>53.4%</td>
+      <td>1384</td>
+    </tr>
+    <tr>
+      <td>A. fech. do gatilho (MOC)</td>
+      <td>dev</td>
+      <td>12.00%</td>
+      <td>1.71</td>
+      <td>-10.9%</td>
+      <td>+1.03%</td>
+      <td>54.4%</td>
+      <td>9708</td>
+    </tr>
+    <tr>
+      <td>B. abertura do dia seguinte</td>
+      <td>dev</td>
+      <td>9.84%</td>
+      <td>1.50</td>
+      <td>-9.5%</td>
+      <td>+0.85%</td>
+      <td>53.7%</td>
+      <td>9708</td>
+    </tr>
+    <tr>
+      <td>B+. abertura + 5bps de slippage</td>
+      <td>dev</td>
+      <td>9.22%</td>
+      <td>1.42</td>
+      <td>-9.5%</td>
+      <td>+0.80%</td>
+      <td>53.4%</td>
+      <td>9708</td>
+    </tr>
+    <tr>
+      <td>C. fech. do dia seguinte</td>
+      <td>dev</td>
+      <td>8.64%</td>
+      <td>1.53</td>
+      <td>-8.1%</td>
+      <td>+0.75%</td>
+      <td>53.2%</td>
+      <td>9708</td>
+    </tr>
+    <tr>
+      <td>D. abertura -> abertura&nbsp;&nbsp;(MOO nas duas pontas)</td>
+      <td>dev</td>
+      <td>8.99%</td>
+      <td>1.51</td>
+      <td>-10.1%</td>
+      <td>+0.96%</td>
+      <td>53.1%</td>
+      <td>7929</td>
+    </tr>
+    <tr>
+      <td>D+. abertura -> abertura, 5bps por ponta</td>
+      <td>dev</td>
+      <td>7.98%</td>
+      <td>1.35</td>
+      <td>-10.5%</td>
+      <td>+0.86%</td>
+      <td>52.4%</td>
+      <td>7929</td>
+    </tr>
+  </tbody>
+</table>
+      
+      <h3>Onde mora o dinheiro: a noite seguinte ao gatilho</h3>
+      <table class="dataframe data-table">
+  <thead>
+    <tr style="text-align: right;">
+      <th>fase</th>
+      <th>noites medidas</th>
+      <th>gap na noite do gatilho</th>
+      <th>gap de uma noite qualquer</th>
+      <th>excesso do gatilho</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>dev</td>
+      <td>9708</td>
+      <td>+0.174%</td>
+      <td>+0.058%</td>
+      <td>+0.115%</td>
+    </tr>
+    <tr>
+      <td>holdout</td>
+      <td>1716</td>
+      <td>+0.157%</td>
+      <td>+0.053%</td>
+      <td>+0.104%</td>
+    </tr>
+  </tbody>
+</table>
+      <p class="lead">A diferença entre comprar no fechamento e comprar na abertura seguinte é
+      <b>exatamente um gap noturno</b>. E não é um gap qualquer: depois de um gatilho de
+      sobrevenda ele vale <b>0.174%</b> em média, contra
+      <b>0.058%</b> de uma noite comum do mesmo universo — cerca de
+      <b>3.0×</b>. Ou seja, <b>66%</b> do que se captura é prêmio <i>do
+      sinal</i>, não o prêmio noturno genérico do mercado.</p>
+      <p class="lead">É por isso que o esquema <b>abertura → abertura</b> não resolve. Ele
+      recoloca um gap na conta, mas troca o gap rico da noite do gatilho por um gap comum quatro
+      ou cinco pregões depois — e ainda segura a posição <b>um dia a mais</b>, o que sob o teto
+      de 20 vagas derruba o giro de 9708 para 7929 operações no dev.</p>
+      
+      <h3>Dá para decidir às 15h50? (o corte do MOC)</h3>
+      <p class="lead">A ordem MOC garante o preço oficial de fechamento, mas precisa ser enviada
+      até <b>15h50 ET</b> — dez minutos antes de o fechamento existir. O sinal, portanto, é
+      calculado com um preço que ainda vai mudar. Para medir isso, o fechamento usado para
+      <i>gerar o sinal</i> foi perturbado por um ruído de desvio igual a <b>√(10/390) = 0,160</b>
+      da volatilidade diária do ativo (a fatia de 10 minutos num pregão de 390), enquanto a
+      <i>execução</i> segue nos preços verdadeiros — que é exatamente a situação real. O teste é
+      conservador de propósito: perturbar a série inteira também suja fechamentos passados, que
+      na vida real já são conhecidos.</p>
+      <table class="dataframe data-table">
+  <thead>
+    <tr style="text-align: right;">
+      <th>fase</th>
+      <th>ruído no preço das 15h50</th>
+      <th>CAGR médio</th>
+      <th>pior sorteio</th>
+      <th>melhor sorteio</th>
+      <th>custo vs. fechamento real</th>
+      <th>gatilhos perdidos</th>
+      <th>gatilhos falsos</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>dev</td>
+      <td>10 min (k=0.160)</td>
+      <td>11.29%</td>
+      <td>10.99%</td>
+      <td>11.67%</td>
+      <td>-0.67pp</td>
+      <td>17.3%</td>
+      <td>17.3%</td>
+    </tr>
+    <tr>
+      <td>dev</td>
+      <td>40 min (k=0.320)</td>
+      <td>10.59%</td>
+      <td>10.16%</td>
+      <td>11.31%</td>
+      <td>-1.37pp</td>
+      <td>26.8%</td>
+      <td>26.8%</td>
+    </tr>
+    <tr>
+      <td>holdout</td>
+      <td>10 min (k=0.160)</td>
+      <td>12.06%</td>
+      <td>11.21%</td>
+      <td>12.95%</td>
+      <td>+1.29pp</td>
+      <td>17.3%</td>
+      <td>16.9%</td>
+    </tr>
+    <tr>
+      <td>holdout</td>
+      <td>40 min (k=0.320)</td>
+      <td>12.45%</td>
+      <td>10.29%</td>
+      <td>14.54%</td>
+      <td>+1.68pp</td>
+      <td>27.1%</td>
+      <td>26.6%</td>
+    </tr>
+  </tbody>
+</table>
+      <div class="alert ok"><b>Não é aqui que o livro quebra.</b> Com o ruído de 10 minutos,
+      <b>17.3%</b> dos gatilhos somem e outros
+      <b>17.3%</b> aparecem no lugar — troca de um sexto da carteira. Ainda
+      assim o custo é de <b>-0.67pp</b> no dev e
+      <b>+1.29pp</b> no holdout (este último dentro do ruído amostral, com
+      dispersão de 11.2% a 12.9% entre sorteios). O
+      motivo é estrutural: a fila de 20 vagas é <b>sobrescrita</b> — perder um candidato quase
+      sempre significa apenas promover o próximo, que tem nota parecida.</div>
+      <h3>Duas tentativas de resgatar a entrada na abertura</h3><p class="lead"><b>1) Reotimizar a duração sob a nova regra.</b>
+      Se a entrada muda, a duração ótima poderia mudar junto. A grade de 5×5 durações foi refeita
+      já com compra na abertura: o melhor par no dev é <b>rsi_revert 4d + vwap_revert 6d</b>
+      com 9.87%, contra 9.84% do livro atual 5d/4d — ganho de
+      +0.03pp, ou seja, nada. E no holdout o "otimizado" fica <b>pior</b>:
+      8.91% contra 9.50%. Não existe duração que devolva o gap.</p><p class="lead"><b>2) Filtrar pelo próprio gap às 9h30.</b> A abertura
+      é observável antes da ordem: se a alta já aconteceu, talvez não valha mais entrar. Foram
+      testados sete cortes. <b>Todos pioram.</b> O melhor deles dá 9.42% no dev, contra
+      9.84% sem filtro nenhum.</p>
+      <table class="dataframe data-table">
+  <thead>
+    <tr style="text-align: right;">
+      <th>fase</th>
+      <th>só entra se...</th>
+      <th>CAGR</th>
+      <th>Sharpe</th>
+      <th>MDD</th>
+      <th>ganho/trade</th>
+      <th>trades</th>
+      <th>% do pool que sobra</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>dev</td>
+      <td>gap <= -1,0%</td>
+      <td>4.20%</td>
+      <td>0.84</td>
+      <td>-9.2%</td>
+      <td>+0.71%</td>
+      <td>5174</td>
+      <td>12.8%</td>
+    </tr>
+    <tr>
+      <td>dev</td>
+      <td>gap <= -0,5%</td>
+      <td>6.98%</td>
+      <td>1.34</td>
+      <td>-7.6%</td>
+      <td>+0.81%</td>
+      <td>7331</td>
+      <td>23.3%</td>
+    </tr>
+    <tr>
+      <td>dev</td>
+      <td>gap <= 0%</td>
+      <td>7.81%</td>
+      <td>1.36</td>
+      <td>-8.8%</td>
+      <td>+0.71%</td>
+      <td>9331</td>
+      <td>46.6%</td>
+    </tr>
+    <tr>
+      <td>dev</td>
+      <td>gap <= +0,25%</td>
+      <td>7.92%</td>
+      <td>1.39</td>
+      <td>-8.8%</td>
+      <td>+0.70%</td>
+      <td>9589</td>
+      <td>60.0%</td>
+    </tr>
+    <tr>
+      <td>dev</td>
+      <td>gap <= +0,5%</td>
+      <td>9.20%</td>
+      <td>1.55</td>
+      <td>-7.7%</td>
+      <td>+0.80%</td>
+      <td>9673</td>
+      <td>71.4%</td>
+    </tr>
+    <tr>
+      <td>dev</td>
+      <td>gap <= +1,0%</td>
+      <td>9.42%</td>
+      <td>1.54</td>
+      <td>-8.1%</td>
+      <td>+0.82%</td>
+      <td>9724</td>
+      <td>85.3%</td>
+    </tr>
+    <tr>
+      <td>dev</td>
+      <td>sem filtro de gap</td>
+      <td>9.84%</td>
+      <td>1.50</td>
+      <td>-9.5%</td>
+      <td>+0.85%</td>
+      <td>9708</td>
+      <td>100.0%</td>
+    </tr>
+    <tr>
+      <td>holdout</td>
+      <td>gap <= -1,0%</td>
+      <td>5.23%</td>
+      <td>1.12</td>
+      <td>-2.7%</td>
+      <td>+0.75%</td>
+      <td>1054</td>
+      <td>13.5%</td>
+    </tr>
+    <tr>
+      <td>holdout</td>
+      <td>gap <= -0,5%</td>
+      <td>7.81%</td>
+      <td>1.58</td>
+      <td>-3.3%</td>
+      <td>+0.81%</td>
+      <td>1434</td>
+      <td>23.7%</td>
+    </tr>
+    <tr>
+      <td>holdout</td>
+      <td>gap <= 0%</td>
+      <td>6.88%</td>
+      <td>1.28</td>
+      <td>-4.6%</td>
+      <td>+0.61%</td>
+      <td>1693</td>
+      <td>49.2%</td>
+    </tr>
+    <tr>
+      <td>holdout</td>
+      <td>gap <= +0,25%</td>
+      <td>8.22%</td>
+      <td>1.49</td>
+      <td>-4.1%</td>
+      <td>+0.72%</td>
+      <td>1708</td>
+      <td>62.6%</td>
+    </tr>
+    <tr>
+      <td>holdout</td>
+      <td>gap <= +0,5%</td>
+      <td>7.74%</td>
+      <td>1.42</td>
+      <td>-3.8%</td>
+      <td>+0.68%</td>
+      <td>1713</td>
+      <td>72.8%</td>
+    </tr>
+    <tr>
+      <td>holdout</td>
+      <td>gap <= +1,0%</td>
+      <td>7.98%</td>
+      <td>1.40</td>
+      <td>-4.3%</td>
+      <td>+0.70%</td>
+      <td>1713</td>
+      <td>85.4%</td>
+    </tr>
+    <tr>
+      <td>holdout</td>
+      <td>sem filtro de gap</td>
+      <td>9.50%</td>
+      <td>1.55</td>
+      <td>-4.5%</td>
+      <td>+0.82%</td>
+      <td>1716</td>
+      <td>100.0%</td>
+    </tr>
+  </tbody>
+</table>
+      <div class="alert warn"><b>Por que a ideia falha — e eu apostava que funcionaria.</b> O
+      retorno a partir da abertura não é monótono no gap, é em <b>U</b>: quem abre em queda forte
+      (abaixo de −2%) rende +0,69% e quem abre em alta forte (acima de +2%) rende +0,68%,
+      enquanto a faixa central de −0,5% a +0,5% rende cerca de 0,35%. Filtrar "só gap negativo"
+      joga fora a metade boa do outro lado. O gap carrega informação sobre <i>intensidade</i>,
+      não sobre <i>direção</i>.</div>
+
+      <h3>O que isto exige da mesa</h3>
+      <div class="alert warn"><b>Requisito 1 — MOC obrigatório na entrada.</b> As ordens precisam
+      sair como market-on-close até 15h50 ET, com o sinal calculado no preço daquele momento.
+      Preencher na abertura do dia seguinte não é uma aproximação aceitável: custa a meta.<br>
+      <b>Requisito 2 — a saída é o lado fácil.</b> As duas pernas têm duração fixa (5 e 4
+      pregões), então o dia da venda já é conhecido no momento da compra. O MOC de saída não tem
+      problema de informação nenhum: é só agendar.<br>
+      <b>Requisito 3 — capacidade.</b> O MOC executa no leilão de fechamento, o momento de maior
+      liquidez do dia, e o universo tem 202 nomes líquidos. Para 20 posições de 1% o tamanho da
+      ordem é irrelevante perto do leilão — mas isso deixa de valer se o capital sob gestão
+      crescer bastante, e nesse caso este estudo precisa ser refeito com dados de leilão.</div>
+      <p class="lead" style="color:#666;font-size:12px">Ressalva de método: a grade de
+      reotimização soma 25 tentativas e os cortes de gap somam mais 7 ao problema de testes
+      múltiplos já contabilizado. Nenhuma foi adotada — todas falharam —, mas ficam
+      registradas.</p>
+    </div>
     <div class="section" style="border:2px solid var(--gold)">
       <h2>🔬 Conferência no gráfico — todas as operações, ação por ação</h2>
       <p class="lead">As <b>11.424 operações</b> que o livro final executou em 202 ações. Cada
@@ -1535,7 +1988,8 @@ h1 { font-size: 28px; margin: 0 0 2px; }
       fechar.</span>
       <br><b>1.</b> A compra acontece no <b>FECHAMENTO do dia do gatilho</b> — é essa a data da
       primeira coluna, e o preço de entrada é o fechamento dela. A posição passa a existir no
-      pregão seguinte.
+      pregão seguinte. Na mesa isso significa <b>ordem MOC enviada até 15h50 ET</b>; a seção
+      <i>Execução</i> mede o que se perde ao comprar na abertura do dia seguinte.
       <br><b>2.</b> Nossos dados têm o <b>fechamento ajustado por proventos</b>. Ligue
       "Adjust data for dividends" no TradingView, senão a diferença vem de dividendo e não de
       erro do backtest.
