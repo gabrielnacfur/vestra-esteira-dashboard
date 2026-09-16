@@ -7,5 +7,7 @@
   "usindices": "Índices US (S&P 500 + Nasdaq 100)",
   "kalman_us": "Kalman momentum — swing EUA (S&P 500 + NASDAQ 100 + Outras)",
   "aprovado": "Aprovado (S&P 500 + NASDAQ 100)",
-  "acerto": "Acerto × CAGR — diário e semanal"
+  "acerto": "Acerto × CAGR — diário e semanal",
+  "gestor": "Gestor — semanal, saída técnica ou +2,5%, ranking por acerto",
+  "gestor_call": "Gestor — a mesma regra operada com call (ATM, 30/45/60 dias)"
 }
