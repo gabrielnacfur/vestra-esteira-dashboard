@@ -13,5 +13,8 @@
   "gestor_vwap": "Gestor — vwap_revert: distância da VWAP, janela e todas as operações",
   "gestor_disaster": "Gestor — disaster: gaps de 6 a 10% e todas as operações",
   "gestor_dia": "Gestor — diário, saída técnica ou +2,5%, ranking por acerto",
-  "gestor_dia_call": "Gestor — diário operado com call (ATM, 30/45/60 dias)"
+  "gestor_dia_call": "Gestor — diário operado com call (ATM, 30/45/60 dias)",
+  "gestor_dia_ifr2pt": "Gestor diário — ifr2_pullback_trend: janela e limiar de entrada",
+  "gestor_dia_macross": "Gestor diário — ma_crossover: médias rápida e lenta",
+  "gestor_dia_uosc": "Gestor diário — ultimate_osc: limiares de compra e de saída"
 }
